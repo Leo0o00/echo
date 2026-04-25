@@ -1,14 +1,14 @@
 "use client"
 
-import { useQuery } from "convex/react"
 import { api } from "@workspace/backend/_generated/api"
+import { useQuery } from "convex/react"
 
 export default function Page() {
   const users = useQuery(api.users.getMany)
 
   return (
     <div className="flex min-h-svh items-center justify-center">
-      <p>apps/web</p>
+      <p>apps/widget</p>
     </div>
   )
 }
