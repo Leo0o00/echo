@@ -1,7 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google"
 
 import "@workspace/ui/globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@workspace/ui/lib/utils"
 import { Providers } from "@/components/providers"
 
@@ -29,9 +28,7 @@ export default function RootLayout({
       )}
     >
       <body>
-        <Providers>
-          <ThemeProvider>{children}</ThemeProvider>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )
