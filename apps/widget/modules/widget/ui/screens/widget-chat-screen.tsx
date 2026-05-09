@@ -10,6 +10,7 @@ import {
 } from "../../atoms/widget-atoms"
 import { useQuery } from "convex/react"
 import { api } from "@workspace/backend/_generated/api"
+import { useThreadMessages } from "@convex-dev/agent/react"
 
 export const WidgetChatScreen = () => {
   const setScreen = useSetAtom(screenAtom)
@@ -26,6 +27,17 @@ export const WidgetChatScreen = () => {
     conversationId && contactSessionId
       ? { conversationId, contactSessionId }
       : "skip"
+  )
+
+  const messages = useThreadMessages(
+    api.public.messages.getMany,
+    conversation?.threadId && contactSessionId
+      ? {
+          threadId: conversation.threadId,
+          contactSessionId,
+        }
+      : "skip",
+    { initialNumItems: 10 }
   )
 
   const onBack = () => {
