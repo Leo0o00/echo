@@ -2,6 +2,8 @@ import { Button } from "@workspace/ui/components/button"
 import { WidgetHeader } from "../components/widget-header"
 import { ArrowLeftIcon, MenuIcon } from "lucide-react"
 import { useAtomValue, useSetAtom } from "jotai"
+import { useInfiniteScroll } from "@workspace/ui/hooks/use-infinite-scroll"
+import { InfiniteScrollTrigger } from "@workspace/ui/components/infinite-scroll-trigger"
 import {
   contactSessionIdAtomFamily,
   conversationIdAtom,
@@ -31,6 +33,7 @@ import {
   AIInputTools,
 } from "@workspace/ui/components/ai/input"
 import { FieldGroup } from "@workspace/ui/components/field"
+import { DicebearAvatar } from "@workspace/ui/components/dicebear-avatar"
 
 const formSchema = z.object({
   message: z.string().min(1, "Message is required"),
@@ -63,6 +66,13 @@ export const WidgetChatScreen = () => {
       : "skip",
     { initialNumItems: 10 }
   )
+
+  const { topElementRef, handleLoadMore, canLoadMore, isLoadingMore } =
+    useInfiniteScroll({
+      status: messages.status,
+      loadMore: messages.loadMore,
+      loadSize: 10,
+    })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -106,6 +116,12 @@ export const WidgetChatScreen = () => {
       </WidgetHeader>
       <AIConversation>
         <AIConversationContent>
+          <InfiniteScrollTrigger
+            canLoadMore={canLoadMore}
+            isLoadingMore={isLoadingMore}
+            onLoadMore={handleLoadMore}
+            ref={topElementRef}
+          />
           {toUIMessages(messages.results ?? [])?.map((message) => {
             return (
               <AIMessage
@@ -115,7 +131,13 @@ export const WidgetChatScreen = () => {
                 <AIMessageContent>
                   <AIResponse>{message.text}</AIResponse>
                 </AIMessageContent>
-                {/* TODO: Add Avatar component */}
+                {message.role === "assistant" && (
+                  <DicebearAvatar
+                    imageUrl="/logo.svg"
+                    seed="assistant"
+                    size={38}
+                  />
+                )}
               </AIMessage>
             )
           })}
