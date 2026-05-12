@@ -23,8 +23,6 @@ const statusConfig = {
 export const ConversationStatusIcon = ({
   status,
 }: ConversationStatusIconProps) => {
-  console.log({ status })
-
   const config = statusConfig[status]
   const Icon = config.icon
 
