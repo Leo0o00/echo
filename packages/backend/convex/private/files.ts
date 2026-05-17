@@ -1,7 +1,9 @@
-import { ConvexError, v } from "convex/values"
-import { action, mutation } from "../_generated/server"
+import { ConvexError, GenericId, v, Value } from "convex/values"
+import { action, mutation, query, QueryCtx } from "../_generated/server"
 import {
   contentHashFromArrayBuffer,
+  Entry,
+  EntryId,
   guessMimeTypeFromContents,
   guessMimeTypeFromExtension,
   RAG,
@@ -10,6 +12,7 @@ import {
 import { extractTextContent } from "../lib/extractTextContent"
 import rag from "../system/ai/rag"
 import { Id } from "../_generated/dataModel"
+import { GenericQueryCtx, paginationOptsValidator } from "convex/server"
 
 function guessMimeType(filename: string, bytes: ArrayBuffer): string {
   return (
@@ -88,6 +91,66 @@ export const addFile = action({
   },
 })
 
+export const listFiles = query({
+  args: {
+    category: v.optional(v.string()),
+    paginationOpts: paginationOptsValidator,
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity()
+    if (identity == null) {
+      throw new ConvexError({
+        code: "UNAUTHORIZED",
+        message: "Identity not found",
+      })
+    }
+
+    if (
+      !identity.o ||
+      typeof identity.o !== "object" ||
+      !("id" in identity.o) ||
+      typeof identity.o.id !== "string"
+    ) {
+      throw new ConvexError({
+        code: "UNAUTHORIZED",
+        message: "Organization not found",
+      })
+    }
+    const orgId = identity.o.id
+
+    const namespace = await rag.getNamespace(ctx, {
+      namespace: orgId,
+    })
+
+    if (!namespace) {
+      return {
+        page: [],
+        isDone: true,
+        continueCursor: "",
+      }
+    }
+
+    const results = await rag.list(ctx, {
+      namespaceId: namespace.namespaceId,
+      paginationOpts: args.paginationOpts,
+    })
+
+    const files = await Promise.all(
+      results.page.map((entry) => convertEntryToPublicFile(ctx, entry))
+    )
+
+    const filteredFiles = args.category
+      ? files.filter((file) => file.category === args.category)
+      : files
+
+    return {
+      page: filteredFiles,
+      isDone: results.isDone,
+      continueCursor: results.continueCursor,
+    }
+  },
+})
+
 export const deleteFile = mutation({
   args: {
     entryId: vEntryId,
@@ -152,3 +215,73 @@ export const deleteFile = mutation({
     })
   },
 })
+
+export type PublicFile = {
+  id: EntryId
+  name: string
+  type: string
+  size: string
+  status: "ready" | "processing" | "error"
+  url: string | null
+  category?: string
+}
+
+type EntryMetadata = {
+  storageId: Id<"_storage">
+  uploadedBy: string
+  filename: string
+  catagory: string | null
+}
+
+async function convertEntryToPublicFile(
+  ctx: QueryCtx,
+  entry: Entry
+): Promise<PublicFile> {
+  const metadata = entry.metadata as EntryMetadata | undefined
+  const storageId = metadata?.storageId
+
+  let fileSize = "unknown"
+
+  if (storageId) {
+    try {
+      const storageMetadata = await ctx.db.system.get(storageId)
+      if (storageMetadata) {
+        fileSize = formatFileSize(storageMetadata.size)
+      }
+    } catch (error) {
+      console.error("Failed to get storage metadata: ", error)
+    }
+  }
+
+  const filename = entry.key || "Unknown"
+  const extension = filename.split(".").pop()?.toLowerCase() || "txt"
+
+  let status: "ready" | "processing" | "error" = "error"
+  if (entry.status === "ready") {
+    status = "ready"
+  } else if (entry.status === "pending") {
+    status = "processing"
+  }
+
+  const url = storageId ? await ctx.storage.getUrl(storageId) : null
+
+  return {
+    id: entry.entryId,
+    name: filename,
+    type: extension,
+    size: fileSize,
+    status,
+    url,
+    category: metadata?.catagory || undefined,
+  }
+}
+
+function formatFileSize(bytes: number): string {
+  if (bytes === 0) return "0 B"
+
+  const k = 1024
+  const sizes = ["B", "KB", "MB", "GB"]
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+  return `${Number.parseFloat((bytes / k ** i).toFixed(1))} ${sizes[i]}`
+}

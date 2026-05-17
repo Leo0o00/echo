@@ -6,6 +6,7 @@ import { paginationOptsValidator } from "convex/server"
 import { saveMessage } from "@convex-dev/agent"
 import { generateText } from "ai"
 import { google } from "@ai-sdk/google"
+import { OPERATOR_MESSAGE_ENHANCEMENT_PROMPT } from "../system/ai/constants"
 
 export const enhanceResponse = action({
   args: {
@@ -38,8 +39,7 @@ export const enhanceResponse = action({
       messages: [
         {
           role: "system",
-          content:
-            "Enhance the operator's message to be more professional, clear, and helpful while maintaining their intent and key information. Just reply with the improved message. Don't ask questions or try to engage the operator in a conversation.",
+          content: OPERATOR_MESSAGE_ENHANCEMENT_PROMPT,
         },
         {
           role: "user",
