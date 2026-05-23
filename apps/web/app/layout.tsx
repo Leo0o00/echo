@@ -9,6 +9,7 @@ import {
 import "@workspace/ui/globals.css"
 import { cn } from "@workspace/ui/lib/utils"
 import Providers from "@/components/providers"
+import { Toaster } from "@workspace/ui/components/sonner"
 import { ClerkProvider } from "@clerk/nextjs"
 import { Metadata } from "next"
 
@@ -45,7 +46,10 @@ export default function RootLayout({
     >
       <body>
         <ClerkProvider>
-          <Providers>{children}</Providers>
+          <Providers>
+            <Toaster />
+            {children}
+          </Providers>
         </ClerkProvider>
       </body>
     </html>
