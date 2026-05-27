@@ -49,12 +49,14 @@ export const WidgetInboxScreen = () => {
       <WidgetHeader>
         <div className="flex items-center gap-x-2">
           <Button
+            className="cursor-pointer"
             variant="transparent"
             size="icon"
             onClick={() => setScreen("selection")}
           >
             <ArrowLeftIcon />
           </Button>
+          <p>Inbox</p>
         </div>
       </WidgetHeader>
       <div className="flex flex-1 flex-col gap-y-2 overflow-y-auto p-4">

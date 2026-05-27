@@ -122,12 +122,17 @@ export const WidgetChatScreen = () => {
     <>
       <WidgetHeader className="flex items-center justify-between">
         <div className="flex items-center gap-x-2">
-          <Button size="icon" variant="transparent" onClick={onBack}>
+          <Button
+            className="cursor-pointer"
+            size="icon"
+            variant="transparent"
+            onClick={onBack}
+          >
             <ArrowLeftIcon />
           </Button>
           <p>Chat</p>
         </div>
-        <Button size="icon" variant="transparent">
+        <Button className="cursor-pointer" size="icon" variant="transparent">
           <MenuIcon />
         </Button>
       </WidgetHeader>
@@ -215,6 +220,7 @@ export const WidgetChatScreen = () => {
                 <AIInputToolbar>
                   <AIInputTools />
                   <AIInputSubmit
+                    className="cursor-pointer"
                     disabled={
                       conversation?.status === "resolved" ||
                       !form.formState.isValid
