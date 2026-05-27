@@ -28,7 +28,9 @@ export default function RootLayout({
       )}
     >
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <div className="h-screen w-screen">{children}</div>
+        </Providers>
       </body>
     </html>
   )
