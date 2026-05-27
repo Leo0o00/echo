@@ -1,10 +1,11 @@
 import { WidgetHeader } from "../components/widget-header"
 import { useAtomValue, useSetAtom } from "jotai"
 import { screenAtom, widgetSettingsAtom } from "../../atoms/widget-atoms"
-import { Button } from "@workspace/ui/components/button"
+import { Button, buttonVariants } from "@workspace/ui/components/button"
 import { ArrowLeftIcon, CheckIcon, CopyIcon, PhoneIcon } from "lucide-react"
 import { useState } from "react"
 import Link from "next/link"
+import { cn } from "@workspace/ui/lib/utils"
 
 export const WidgetContactScreen = () => {
   const setScreen = useSetAtom(screenAtom)
@@ -68,16 +69,14 @@ export const WidgetContactScreen = () => {
               </>
             )}
           </Button>
-          <Button
-            className="w-full"
-            size="lg"
-            render={
-              <Link href={`tel:${phoneNumber}`}>
-                <PhoneIcon />
-                Call Now
-              </Link>
-            }
-          ></Button>
+
+          <Link
+            className={cn(buttonVariants({ className: "w-full", size: "lg" }))}
+            href={`tel:${phoneNumber}`}
+          >
+            <PhoneIcon />
+            Call Now
+          </Link>
         </div>
       </div>
     </>
