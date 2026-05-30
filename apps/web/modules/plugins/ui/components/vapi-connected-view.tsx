@@ -4,7 +4,7 @@ import { BotIcon, PhoneIcon, SettingsIcon, UnplugIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
-import { Button } from "@workspace/ui/components/button"
+import { Button, buttonVariants } from "@workspace/ui/components/button"
 import {
   Card,
   CardDescription,
@@ -71,9 +71,7 @@ export const VapiConnectedView = ({ onDisconnect }: VapiConnectedViewProps) => {
                 </CardDescription>
               </div>
             </div>
-            <Button
-              render={<Link href="/customization">Configure</Link>}
-            ></Button>
+            <Link className={buttonVariants()} href="/customization"></Link>
           </div>
         </CardHeader>
       </Card>
