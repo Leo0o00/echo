@@ -2,7 +2,7 @@ import { ConvexError, v } from "convex/values"
 import { mutation, query } from "../_generated/server"
 import { supportAgent } from "../system/ai/agents/supporAgent"
 import { MessageDoc, saveMessage } from "@convex-dev/agent"
-import { components } from "../_generated/api"
+import { components, internal } from "../_generated/api"
 import { paginationOptsValidator } from "convex/server"
 
 export const getMany = query({
@@ -113,6 +113,11 @@ export const create = mutation({
       })
     }
 
+    // Refresh user's session if they are withing the threshold
+    await ctx.runMutation(internal.system.contactSessions.refresh, {
+      contactSessionId: args.contactSessionId,
+    })
+
     const widgetSettings = await ctx.db
       .query("widgetSettings")
       .withIndex("by_organization_id", (q) =>
@@ -128,7 +133,6 @@ export const create = mutation({
       threadId,
       message: {
         role: "assistant",
-        // TODO: Later modify to widget setting's initial message
         content:
           widgetSettings?.greetMessage || "Hello, how can I help you today?",
       },
