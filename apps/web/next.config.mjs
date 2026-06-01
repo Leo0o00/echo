@@ -1,7 +1,16 @@
-import { withSentryConfig } from "@sentry/nextjs";
+import { withSentryConfig } from "@sentry/nextjs"
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ["@workspace/ui"],
+  async redirects() {
+    return [
+      {
+        source: "/dashboard",
+        destination: "/dashboard/conversations",
+        permanent: false,
+      },
+    ]
+  },
 }
 
 export default withSentryConfig(nextConfig, {
@@ -40,4 +49,4 @@ export default withSentryConfig(nextConfig, {
       removeDebugLogging: true,
     },
   },
-});
+})

@@ -134,15 +134,17 @@ export const ConversationsPanel = () => {
                   key={conversation._id}
                   className={cn(
                     "relative flex cursor-pointer items-start gap-3 border-b p-4 py-5 text-sm leading-tight hover:bg-accent hover:text-accent-foreground",
-                    pathname === `/conversations/${conversation._id}` &&
+                    pathname ===
+                      `/dashboard/conversations/${conversation._id}` &&
                       "bg-accent text-accent-foreground"
                   )}
-                  href={`/conversations/${conversation._id}`}
+                  href={`/dashboard/conversations/${conversation._id}`}
                 >
                   <div
                     className={cn(
                       "absolute top-1/2 left-0 h-[64%] w-1 -translate-y-1/2 rounded-r-full bg-neutral-300 opacity-0 transition-opacity",
-                      pathname === `/conversations/${conversation._id}` &&
+                      pathname ===
+                        `/dashboard/conversations/${conversation._id}` &&
                         "opacity-100"
                     )}
                   />

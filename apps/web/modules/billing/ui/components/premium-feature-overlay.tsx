@@ -111,7 +111,7 @@ export const PremiumFeatureOverlay = ({
             </div>
             <Button
               className="w-full cursor-pointer"
-              onClick={() => router.push("/billing")}
+              onClick={() => router.push("/dashboard/billing")}
               size="lg"
             >
               View Plans

@@ -28,12 +28,12 @@ import { usePathname } from "next/navigation"
 const customerSupportItems = [
   {
     title: "Conversations",
-    url: "/conversations",
+    url: "/dashboard/conversations",
     icon: InboxIcon,
   },
   {
     title: "Knowledge Base",
-    url: "/files",
+    url: "/dashboard/files",
     icon: LibraryBigIcon,
   },
 ]
@@ -41,17 +41,17 @@ const customerSupportItems = [
 const configurationsItems = [
   {
     title: "Widget Customization",
-    url: "/customization",
+    url: "/dashboard/customization",
     icon: PaletteIcon,
   },
   {
     title: "Integrations",
-    url: "/integrations",
+    url: "/dashboard/integrations",
     icon: LayoutDashboardIcon,
   },
   {
     title: "Voice Assistant",
-    url: "/plugins/vapi",
+    url: "/dashboard/plugins/vapi",
     icon: Mic,
   },
 ]
@@ -59,7 +59,7 @@ const configurationsItems = [
 const accountItems = [
   {
     title: "Plans & Billing",
-    url: "/billing",
+    url: "/dashboard/billing",
     icon: CreditCardIcon,
   },
 ]
