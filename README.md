@@ -21,6 +21,7 @@ Echo is a web-based tool that allows you to provide your customers with a compre
 
 - AWS Secrets Manager
 - VAPI
+- Google Gemini AI
 
 ## Features
 
